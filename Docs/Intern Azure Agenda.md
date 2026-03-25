@@ -32,6 +32,13 @@
 - Users, groups, and roles
 - RBAC vs Entra roles
 
+**Workstation Setup**
+
+- Account provisioning (Azure AD / Entra ID)
+- MFA setup
+- Email, Teams, and VPN configuration
+- Access to documentation (Confluence/SharePoint)
+
 ### Lab Steps
 
 1. Log into Azure Portal

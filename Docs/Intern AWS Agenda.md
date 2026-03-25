@@ -20,54 +20,25 @@ Below is a well‑organized teaching plan with topics, objectives, and suggested
     - Change management
     - Ticketing procedures
 
-### **2. Workstation Setup**
-
-- Account provisioning (Azure AD / Entra ID)
-- MFA setup
-- Email, Teams, and VPN configuration
-- Access to documentation (Confluence/SharePoint)
-
-### **3. IT & Cloud Fundamentals**
+### **2. IT & Cloud Fundamentals**
 
 - What is Cloud Computing? (IaaS, PaaS, SaaS)
 - Overview of on‑prem vs cloud
-- Basic components: Compute, Networking, Storage
+	- Basic components: 
+		- Compute
+		- Networking
+		- Storage
 
 ---
 
-## **📅 Day 2 — Azure Fundamentals (Your Specialty)**
-
-### **1. Azure Overview**
-
-- Azure Portal tour
-- Resource groups
-- Subscriptions & management groups
-- Azure governance model (RBAC, naming conventions, tags)
-
-### **2. Core Azure Services**
-
-- **Compute**: VMs, VM Scale Sets
-- **Networking**: VNets, NSGs, Azure Firewall
-- **Storage**: Blob, Files, Queues
-- **Identity**: Entra ID basics, Conditional Access
-
-### **3. Hands‑On Lab**
-
-- Create a resource group
-- Deploy a VM
-- Configure NSGs
-- Connect via Bastion
-- Upload files to a storage account
-
----
-
-## **📅 Day 3 — AWS Fundamentals**
+## **📅 Day 2 — AWS Fundamentals**
 
 ### **1. AWS Overview**
 
 - AWS Management Console walkthrough
 - Regions & Availability Zones
 - IAM basics
+- Resources
 - Cost awareness & tagging strategies
 
 ### **2. Core AWS Services**
@@ -91,28 +62,27 @@ Below is a well‑organized teaching plan with topics, objectives, and suggested
 ### **1. Infrastructure as Code (IaC)**
 
 - Terraform basics
-- ARM templates / Bicep
 - AWS CloudFormation overview
+	- JSON
+	- YAML
 
 ### **2. DevOps Concepts**
 
-- CI/CD pipelines (Azure DevOps or GitHub Actions)
+- CI/CD pipelines (AWS CodePipeline or GitHub Actions)
 - Source control workflows (Git: branching, PRs, merges)
 
 ### **3. Monitoring & Logging**
 
-- Azure Monitor
 - AWS CloudWatch
-- Log Analytics
 - Alerts and dashboards
 
 ### **4. Hands‑On Lab**
 
-- Create a small Terraform project to deploy a VM or S3 bucket
+- Create a small Terraform/CloudFormation project to deploy a EC2 or S3 bucket
 
 ---
 
-## **📅 Day 5 — Security, Best Practices & Capstone Project**
+## **📅 Day 5 — Security, Best Practices
 
 ### **1. Cloud Security Basics**
 
@@ -124,16 +94,15 @@ Below is a well‑organized teaching plan with topics, objectives, and suggested
 
 ### **2. Cost Optimization**
 
-- Azure Advisor
 - AWS Trusted Advisor
 - Rightsizing resources
-- Stopping unused VMs
+- Stopping/Terminating unused EC2
 
 ### **3. Capstone Project**
 
 **Interns pick one:**
 
-- Build a small multi‑tier lab in Azure
+- Build a small multi‑tier lab in AWS
 - Deploy a secure web app on AWS
 - Implement a monitoring dashboard
 - Create a Terraform-based deployment
@@ -160,27 +129,6 @@ Interns present:
 
 - DNS fundamentals
 - VPNs, ExpressRoute, Direct Connect
-
-### M365
-
-- Entra ID admin
-- Intune device onboarding
-- Teams/SharePoint admin basics
-
----
-
-# 📄 **Would you like me to create any of the following?**
-
-✔ A printable **PDF** version of the itinerary  
-✔ A **PowerPoint** slide deck for intern orientation  
-✔ A **checklist** for intern tasks  
-✔ Detailed **hands‑on labs** for each day  
-✔ A **30‑day extended training curriculum**
-
-Just tell me what you'd like!
-
-
-Perfect addition. Below is an **expanded intern itinerary** that adds **detailed AWS hands‑on labs**, plus **quizzes and assessments** you can use to validate learning. This is written so you can directly turn it into **lab guides, LMS content, or onboarding docs**.
 
 ---
 

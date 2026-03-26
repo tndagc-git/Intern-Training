@@ -1,0 +1,177 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Training CloudFormation template that deploys a VPC,
+  public subnet, and EC2 web server with HTTP and SSH access.
+  Designed to match Terraform training lab architecture.
+
+############################################
+# Parameters
+############################################
+Parameters:
+
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: EC2 Key Pair for SSH access
+
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+    Description: EC2 instance type
+
+  # ✅ Correct and supported SSM AMI lookup
+  LatestAmiId:
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+    Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+    Description: Amazon Linux 2023 AMI via SSM Parameter Store
+
+############################################
+# Resources
+############################################
+Resources:
+
+  ##########################################
+  # VPC
+  ##########################################
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: training-vpc
+
+  ##########################################
+  # Internet Gateway
+  ##########################################
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: training-igw
+
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  ##########################################
+  # Public Subnet
+  ##########################################
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 0
+        - !GetAZs ""
+      Tags:
+        - Key: Name
+          Value: public-subnet
+
+  ##########################################
+  # Route Table
+  ##########################################
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: public-rt
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachInternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  ##########################################
+  # Security Group
+  ##########################################
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and SSH access (training only)
+      VpcId: !Ref VPC
+
+      SecurityGroupIngress:
+        - Description: Allow HTTP
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+        - Description: Allow SSH
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+
+      Tags:
+        - Key: Name
+          Value: web-sg
+
+  ##########################################
+  # EC2 Web Server
+  ##########################################
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref WebSecurityGroup
+
+      Tags:
+        - Key: Name
+          Value: training-webserver
+
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd wget unzip
+          systemctl start httpd
+          systemctl enable httpd
+
+          cd /var/www/html
+          wget https://github.com/azeezsalu/techmax/archive/refs/heads/main.zip
+          unzip main.zip
+          cp -r techmax-main/* /var/www/html/
+          rm -rf techmax-main main.zip
+
+############################################
+# Outputs
+############################################
+Outputs:
+
+  InstancePublicIP:
+    Description: Public IP address of the EC2 web server
+    Value: !GetAtt WebServer.PublicIp
+
+  WebsiteURL:
+    Description: Website URL
+    Value: !Sub "http://${WebServer.PublicIp}"
